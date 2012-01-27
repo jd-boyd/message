@@ -1,9 +1,20 @@
-if(!window.dhtmlx)
-	window.dhtmlx = {};
-
-(function(){
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(function () {
+            // Also create a global in case some scripts
+            // that are loaded still are looking for
+            // a global even when an AMD loader is in use.
+            return (root.dhtmlx = factory());
+        });
+    } else {
+        // Browser globals
+        root.dhtmlx = factory(root.b);
+    }
+}(this, function () {
+    var dhtmlx = {};
 	var _dhx_msg_cfg = null;
-	function callback(config, result){
+	function callback(config, result) {
 			var usercall = config.callback;
 			modality(false);
 			config.box.parentNode.removeChild(config.box);
@@ -29,7 +40,7 @@ if(!window.dhtmlx)
 		document.attachEvent("onkeydown", modal_key);
 	else
 		document.addEventListener("keydown", modal_key, false);
-		
+
 	function modality(mode){
 		if(!modality.cover){
 			modality.cover = document.createElement("DIV");
@@ -65,7 +76,7 @@ if(!window.dhtmlx)
 			t.area.insertBefore(message,t.area.firstChild);
 		else
 			t.area.appendChild(message);
-		
+
 		if (text.expire > 0)
 			t.timers[text.id]=window.setTimeout(function(){
 				t.hide(text.id);
@@ -80,7 +91,7 @@ if(!window.dhtmlx)
 		var box = document.createElement("DIV");
 		box.className = " dhtmlx_modal_box dhtmlx-"+config.type;
 		box.setAttribute("dhxbox", 1);
-			
+
 		var inner = '';
 
 		if (config.width)
@@ -103,7 +114,7 @@ if(!window.dhtmlx)
 
 		if (config.content){
 			var node = config.content;
-			if (typeof node == "string") 
+			if (typeof node == "string")
 				node = document.getElementById(node)
 			box.childNodes[config.title?1:0].appendChild(node);
 		}
@@ -126,7 +137,7 @@ if(!window.dhtmlx)
 	}
 	function _createBox(config, ok, cancel){
 		var box = config.tagName ? config : _boxStructure(config, ok, cancel);
-		
+
 		if (!config.hidden)
 			modality(true);
 		document.body.appendChild(box);
@@ -232,10 +243,15 @@ if(!window.dhtmlx)
 				obj = null;
 			},2000);
 			obj.className+=" hidden";
-			
+
 			if(t.timers[id])
 				window.clearTimeout(t.timers[id]);
 			delete t.pull[id];
 		}
 	};
-})();
+
+    // Just return a value to define the module export.
+    // This example returns an object, but the module
+    // can return a function as the exported value.
+    return dhtmlx;
+}));
